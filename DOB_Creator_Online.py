@@ -264,7 +264,11 @@ slot_files = {
     for slot in DOB_SLOTS
 }
 
-DOB_to_email_files = flatten_package_files([slot_files[slot['key']] for slot in DOB_SLOTS])
+main_dob_slots = [
+    slot for slot in DOB_SLOTS
+    if slot['key'] not in ('stratford_tgobs', 'goderich_exeter_railway')
+]
+DOB_to_email_files = flatten_package_files([slot_files[slot['key']] for slot in main_dob_slots])
 DOB_to_print_files = [dob_cover_page] + DOB_to_email_files
 
 don_package_files = flatten_package_files([
