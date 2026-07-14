@@ -9,6 +9,35 @@ st.set_page_config(
 
 st.header('Alstom-DCOT')
 
+st.markdown(
+    """
+    <style>
+    div[data-testid="stFileUploader"] section {
+        padding: 0.55rem;
+        min-height: 4.25rem;
+    }
+    div[data-testid="stFileUploader"] section p {
+        font-size: 0.78rem;
+        margin-bottom: 0;
+    }
+    div[data-testid="stFileUploader"] small {
+        display: none;
+    }
+    .upload-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0.25rem 0 0.2rem;
+    }
+    .helper-text {
+        color: #6b7280;
+        font-size: 0.82rem;
+        margin: -0.1rem 0 0.25rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 # Slots that appear in the complete DOB package, in package order.
 # source="upload" means the user uploads the PDF each time.
@@ -107,9 +136,9 @@ def pdf_uploader(column, title, helper_text, key_prefix):
     if reset_key not in st.session_state:
         st.session_state[reset_key] = 0
 
-    column.subheader(title)
+    column.markdown(f'<div class="upload-title">{title}</div>', unsafe_allow_html=True)
     if helper_text:
-        column.write(helper_text)
+        column.markdown(f'<div class="helper-text">{helper_text}</div>', unsafe_allow_html=True)
 
     uploaded_file = column.file_uploader(
         'PDF upload',
@@ -125,7 +154,7 @@ def pdf_uploader(column, title, helper_text, key_prefix):
     return uploaded_file
 
 
-def render_uploader_grid(upload_slots, columns_per_row=3):
+def render_uploader_grid(upload_slots, columns_per_row=4):
     uploaded_files = {}
     for start in range(0, len(upload_slots), columns_per_row):
         columns = st.columns(columns_per_row)
@@ -133,7 +162,7 @@ def render_uploader_grid(upload_slots, columns_per_row=3):
             uploaded_files[slot['key']] = pdf_uploader(
                 column,
                 slot['title'],
-                'Upload PDF for this DOB slot.',
+                '',
                 slot['key'],
             )
     return uploaded_files
@@ -193,9 +222,15 @@ cp_package_files = [
     slot_files['cp_toronto_west'],
     slot_files['cp_hamilton'],
 ]
+stratford_package_files = [
+    slot_files['stratford_tgobs'],
+    slot_files['goderich_exeter_railway'],
+]
 
 # get desktop location and filenames
 dob_print_output_file, dob_email_output_file, don_output_file, cp_output_file, metro_output_file = backend.create_file_names()
+month, day, year = backend.get_date()
+stratford_output_file = f'Stratford DOB {month} {day}, {year}.pdf'
 
 if slot_files['cp_toronto_west'] is not None and slot_files['cp_hamilton'] is not None:
     cp_package = backend.combine(cp_package_files)
@@ -211,6 +246,15 @@ if slot_files['mx_guelph'] is not None:
         label=f'Download {metro_output_file}',
         data=slot_files['mx_guelph'],
         file_name=metro_output_file,
+        mime="application/pdf",
+    )
+
+if slot_files['stratford_tgobs'] is not None and slot_files['goderich_exeter_railway'] is not None:
+    stratford_package = backend.combine(stratford_package_files)
+    st.download_button(
+        label=f'Download {stratford_output_file}',
+        data=stratford_package,
+        file_name=stratford_output_file,
         mime="application/pdf",
     )
 
