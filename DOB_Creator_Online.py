@@ -44,13 +44,18 @@ st.markdown(
 # source="builtin" means the app uses a PDF already stored in the PDFs folder.
 DOB_SLOTS = [
     {
-        'key': 'cn_greater_metro_dob',
-        'title': 'CN Greater Metro DOB',
+        'key': 'cn_greater_metro',
+        'title': 'CN Greater Metro',
         'source': 'upload',
     },
     {
-        'key': 'mx_bala_dob',
-        'title': 'MX Bala DOB',
+        'key': 'mx_bala',
+        'title': 'MX Bala',
+        'source': 'upload',
+    },
+    {
+        'key': 'mx_newmarket_pearson_weston',
+        'title': 'MX Newmarket, Pearson, Weston',
         'source': 'upload',
     },
     {
@@ -70,7 +75,7 @@ DOB_SLOTS = [
     },
     {
         'key': 'predeparture_checklist',
-        'title': 'Predeparture Checklist',
+        'title': 'Pre-departure Checklist',
         'source': 'builtin',
         'path': './PDFs/Predeparture Checklist Template  - 2025-12-22.pdf',
     },
@@ -116,11 +121,6 @@ DOB_SLOTS = [
         'path': './PDFs/CPKC Signal Authority Form (Apr10).pdf',
     },
     {
-        'key': 'goderich_exeter_railway',
-        'title': 'Goderich & Exeter Railway',
-        'source': 'upload',
-    },
-    {
         'key': 'dmu_transponder_loops_job_aid',
         'title': 'DMU Transponder Loops Job Aid',
         'source': 'builtin',
@@ -131,6 +131,16 @@ DOB_SLOTS = [
         'title': 'Radio Channel Guide',
         'source': 'builtin',
         'path': './PDFs/Radio Channel Guide July 23rd.pdf',
+    },
+    {
+        'key': 'stratford_tgbos',
+        'title': 'Stratford TGBos',
+        'source': 'upload',
+    },
+    {
+        'key': 'goderich_exeter_railway',
+        'title': 'Goderich & Exeter Railway',
+        'source': 'upload',
     },
 ]
 
