@@ -296,9 +296,15 @@ cp_package_files = flatten_package_files([
     slot_files['cpkc_hamilton'],
 ])
 mx_guelph_files = flatten_package_files([slot_files['mx_guelph']])
+last_two_upload_package_files = flatten_package_files([
+    slot_files['stratford_tgbos'],
+    slot_files['goderich_exeter_railway'],
+])
 
 # get desktop location and filenames
 dob_print_output_file, dob_email_output_file, don_output_file, cp_output_file, metro_output_file = backend.create_file_names()
+month, day, year = backend.get_date()
+last_two_upload_output_file = f'Stratford Goderich Exeter DOB {month} {day}, {year}.pdf'
 
 if package_is_ready(cp_package_files):
     cp_package = backend.combine(cp_package_files)
@@ -323,6 +329,15 @@ if package_is_ready(don_package_files):
         label=f'Download {don_output_file}',
         data=don_package,
         file_name=don_output_file,
+        mime="application/pdf",
+    )
+
+if package_is_ready(last_two_upload_package_files):
+    last_two_upload_package = backend.combine(last_two_upload_package_files)
+    st.download_button(
+        label=f'Download {last_two_upload_output_file}',
+        data=last_two_upload_package,
+        file_name=last_two_upload_output_file,
         mime="application/pdf",
     )
 
