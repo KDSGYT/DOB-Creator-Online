@@ -44,18 +44,13 @@ st.markdown(
 # source="builtin" means the app uses a PDF already stored in the PDFs folder.
 DOB_SLOTS = [
     {
-        'key': 'greater_metro',
-        'title': 'Greater METRO',
+        'key': 'cn_greater_metro_dob',
+        'title': 'CN Greater Metro DOB',
         'source': 'upload',
     },
     {
-        'key': 'mx_bala',
-        'title': 'MX BALA',
-        'source': 'upload',
-    },
-    {
-        'key': 'mx_newmarket_pearson_weston',
-        'title': 'MX NewMarket, PEARSON, WESTON',
+        'key': 'mx_bala_dob',
+        'title': 'MX Bala DOB',
         'source': 'upload',
     },
     {
@@ -64,32 +59,38 @@ DOB_SLOTS = [
         'source': 'upload',
     },
     {
-        'key': 'cp_toronto_west',
-        'title': 'CP Toronto West',
+        'key': 'cpkc_toronto_west',
+        'title': 'CPKC Toronto West',
         'source': 'upload',
     },
     {
-        'key': 'cp_hamilton',
-        'title': 'CP Hamilton',
+        'key': 'cpkc_hamilton',
+        'title': 'CPKC Hamilton',
         'source': 'upload',
     },
     {
-        'key': 'crew_predeparture_checklist',
-        'title': 'Crew Pre-departure Checklist',
+        'key': 'predeparture_checklist',
+        'title': 'Predeparture Checklist',
         'source': 'builtin',
         'path': './PDFs/Predeparture Checklist Template  - 2025-12-22.pdf',
     },
     {
         'key': 'en_route_job_briefings',
-        'title': 'En-Route job briefings',
+        'title': 'En route job briefings',
         'source': 'builtin',
         'path': './PDFs/En route job briefings - Rev Apr 16, 2026.pdf',
     },
     {
         'key': 'reversing_respotting_checklist',
-        'title': 'Reversing/Re-Spotting Checklist',
+        'title': 'Reversing Re-Spotting Checklist',
         'source': 'builtin',
         'path': './PDFs/Reversing Re-Spotting Checklist updated April 02 2026.pdf',
+    },
+    {
+        'key': 'respotting_overshoot_cror_115',
+        'title': 'Re-spotting an Overshoot / CROR 115',
+        'source': 'builtin',
+        'path': './PDFs/Re-spotting an Overshoot and the Application of CROR 115 at Grade Crossings.pdf',
     },
     {
         'key': 'mx_don',
@@ -97,8 +98,8 @@ DOB_SLOTS = [
         'source': 'upload',
     },
     {
-        'key': 'ehs_form',
-        'title': 'EHS Form',
+        'key': 'ehs_concern_form',
+        'title': 'EHS Concern Form',
         'source': 'builtin',
         'path': './PDFs/EHS Concern  Form updated PDF 10.04.2026.pdf',
     },
@@ -109,20 +110,27 @@ DOB_SLOTS = [
         'path': './PDFs/Station to Station Notepad.pdf',
     },
     {
-        'key': 'radio_channel_guide',
-        'title': 'Radio Channel Guide',
+        'key': 'cpkc_signal_authority_form',
+        'title': 'CPKC Signal Authority Form',
         'source': 'builtin',
-        'path': './PDFs/Radio Channel Guide July 23rd.pdf',
-    },
-    {
-        'key': 'stratford_tgobs',
-        'title': 'STRATFORD TGOBs',
-        'source': 'upload',
+        'path': './PDFs/CPKC Signal Authority Form (Apr10).pdf',
     },
     {
         'key': 'goderich_exeter_railway',
         'title': 'Goderich & Exeter Railway',
         'source': 'upload',
+    },
+    {
+        'key': 'dmu_transponder_loops_job_aid',
+        'title': 'DMU Transponder Loops Job Aid',
+        'source': 'builtin',
+        'path': './PDFs/12.15. DMU Transponder Loops - Job Aid.pdf',
+    },
+    {
+        'key': 'radio_channel_guide',
+        'title': 'Radio Channel Guide',
+        'source': 'builtin',
+        'path': './PDFs/Radio Channel Guide July 23rd.pdf',
     },
 ]
 
@@ -264,33 +272,23 @@ slot_files = {
     for slot in DOB_SLOTS
 }
 
-main_dob_slots = [
-    slot for slot in DOB_SLOTS
-    if slot['key'] not in ('stratford_tgobs', 'goderich_exeter_railway')
-]
-DOB_to_email_files = flatten_package_files([slot_files[slot['key']] for slot in main_dob_slots])
+DOB_to_email_files = flatten_package_files([slot_files[slot['key']] for slot in DOB_SLOTS])
 DOB_to_print_files = [dob_cover_page] + DOB_to_email_files
 
 don_package_files = flatten_package_files([
     don_cover_page,
     slot_files['mx_don'],
-    slot_files['ehs_form'],
+    slot_files['ehs_concern_form'],
     slot_files['radio_channel_guide'],
 ])
 cp_package_files = flatten_package_files([
-    slot_files['cp_toronto_west'],
-    slot_files['cp_hamilton'],
+    slot_files['cpkc_toronto_west'],
+    slot_files['cpkc_hamilton'],
 ])
 mx_guelph_files = flatten_package_files([slot_files['mx_guelph']])
-stratford_package_files = flatten_package_files([
-    slot_files['stratford_tgobs'],
-    slot_files['goderich_exeter_railway'],
-])
 
 # get desktop location and filenames
 dob_print_output_file, dob_email_output_file, don_output_file, cp_output_file, metro_output_file = backend.create_file_names()
-month, day, year = backend.get_date()
-stratford_output_file = f'Stratford DOB {month} {day}, {year}.pdf'
 
 if package_is_ready(cp_package_files):
     cp_package = backend.combine(cp_package_files)
@@ -306,15 +304,6 @@ if package_is_ready(mx_guelph_files):
         label=f'Download {metro_output_file}',
         data=package_download_data(mx_guelph_files),
         file_name=metro_output_file,
-        mime="application/pdf",
-    )
-
-if package_is_ready(stratford_package_files):
-    stratford_package = backend.combine(stratford_package_files)
-    st.download_button(
-        label=f'Download {stratford_output_file}',
-        data=stratford_package,
-        file_name=stratford_output_file,
         mime="application/pdf",
     )
 
